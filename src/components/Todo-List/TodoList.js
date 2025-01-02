@@ -3,7 +3,7 @@ import "./TodoList.css"
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { v4 as uuidv4 } from 'uuid';
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { TodoContext } from "../contexts/context";
 import { useContext } from "react";
 import { Flare } from "@mui/icons-material";
@@ -11,12 +11,16 @@ export default function TodoList() {
     const [displayedTodoType, setDisplayedTodoType] = useState("all");
     const { todo, setTodo } = useContext(TodoContext);
     const [titleInput, setTitleInput] = useState("");
-    const isCompleted = todo.filter((t) => {
-        return t.isCompleted;
-    })
-    const isNonCompleted = todo.filter((t) => {
-        return !t.isCompleted;
-    })
+    const isCompleted = useMemo(() => {
+        return todo.filter(t => {
+            return t.isCompleted;
+        })
+    }, [todo])
+    const isNonCompleted = useMemo(() => {
+        return todo.filter((t) => {
+            return !t.isCompleted;
+        })
+    }, [todo])
     let todoToRender = todo;
     if (displayedTodoType == "completed") {
         todoToRender = isCompleted
